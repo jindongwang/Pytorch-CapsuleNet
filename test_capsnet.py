@@ -45,8 +45,8 @@ class Config:
 def train(model, optimizer, train_loader, epoch):
     capsule_net = model
     capsule_net.train()
-    train_loss = 0
     n_batch = len(list(enumerate(train_loader)))
+    total_loss = 0
     for batch_id, (data, target) in enumerate(tqdm(train_loader)):
 
         target = torch.sparse.torch.eye(10).index_select(dim=0, index=target)
@@ -60,17 +60,19 @@ def train(model, optimizer, train_loader, epoch):
         loss = capsule_net.loss(data, output, target, reconstructions)
         loss.backward()
         optimizer.step()
-
-        train_loss += loss.data[0]
+        correct = sum(np.argmax(masked.data.cpu().numpy(), 1) == np.argmax(target.data.cpu().numpy(), 1))
+        train_loss = loss.data[0]
+        total_loss += train_loss
         if batch_id % 100 == 0:
             tqdm.write("Epoch: [{}/{}], Batch: [{}/{}], train accuracy: {:.6f}, loss: {:.6f}".format(
                 epoch,
                 N_EPOCHS,
                 batch_id + 1,
                 n_batch,
-                sum(np.argmax(masked.data.cpu().numpy(), 1) == np.argmax(target.data.cpu().numpy(), 1)) / float(
-                    BATCH_SIZE),
-                train_loss / len(train_loader)))
+                correct / float(BATCH_SIZE),
+                train_loss / float(BATCH_SIZE)
+                ))
+    tqdm.write('Epoch: [{}/{}], train loss: {:.6f}'.format(epoch,N_EPOCHS,total_loss / len(train_loader.dataset)))
 
 
 def test(capsule_net, test_loader, epoch):
