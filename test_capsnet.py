@@ -1,10 +1,8 @@
 import numpy as np
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from torch.optim import Adam
 from torchvision import datasets, transforms
 from capsnet import CapsNet
 from data_loader import Dataset
@@ -65,7 +63,7 @@ def train(model, optimizer, train_loader, epoch):
 
         train_loss += loss.data[0]
         if batch_id % 100 == 0:
-            tqdm.write("Epoch: [{}/{}], Batch: [{}/{}], train accuracy:{:.6f}".format(
+            tqdm.write("Epoch: [{}/{}], Batch: [{}/{}], train accuracy: {:.6f}, loss: {:.6f}".format(
                 epoch,
                 N_EPOCHS,
                 batch_id + 1,
@@ -73,7 +71,6 @@ def train(model, optimizer, train_loader, epoch):
                 sum(np.argmax(masked.data.cpu().numpy(), 1) == np.argmax(target.data.cpu().numpy(), 1)) / float(
                     BATCH_SIZE),
                 train_loss / len(train_loader)))
-
 
 
 def test(capsule_net, test_loader, epoch):
@@ -95,7 +92,9 @@ def test(capsule_net, test_loader, epoch):
         correct += sum(np.argmax(masked.data.cpu().numpy(), 1) ==
                        np.argmax(target.data.cpu().numpy(), 1))
 
-    tqdm.write("Epoch: [{}/{}], test accuracy:{:.6f},loss:{:.6f}".format(epoch, N_EPOCHS, correct / len(test_loader.dataset),test_loss / len(test_loader)))
+    tqdm.write(
+        "Epoch: [{}/{}], test accuracy: {:.6f}, loss: {:.6f}".format(epoch, N_EPOCHS, correct / len(test_loader.dataset),
+                                                                  test_loss / len(test_loader)))
 
 
 if __name__ == '__main__':
@@ -110,7 +109,7 @@ if __name__ == '__main__':
         capsule_net = capsule_net.cuda()
     capsule_net = capsule_net.module
 
-    optimizer = Adam(capsule_net.parameters())
+    optimizer = torch.optim.Adam(capsule_net.parameters())
 
     for e in range(1, N_EPOCHS + 1):
         train(capsule_net, optimizer, mnist.train_loader, e)
