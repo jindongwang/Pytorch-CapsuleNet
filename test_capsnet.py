@@ -71,9 +71,9 @@ def train(model, optimizer, train_loader, epoch):
                 batch_id + 1,
                 n_batch,
                 sum(np.argmax(masked.data.cpu().numpy(), 1) == np.argmax(target.data.cpu().numpy(), 1)) / float(
-                    BATCH_SIZE)))
+                    BATCH_SIZE),
+                train_loss / len(train_loader)))
 
-    tqdm.write(str(train_loss / len(train_loader)))
 
 
 def test(capsule_net, test_loader, epoch):
@@ -95,8 +95,7 @@ def test(capsule_net, test_loader, epoch):
         correct += sum(np.argmax(masked.data.cpu().numpy(), 1) ==
                        np.argmax(target.data.cpu().numpy(), 1))
 
-    ("Epoch: [{}/{}], test accuracy:{:.6f}".format(epoch, N_EPOCHS, correct / len(test_loader.dataset)))
-    tqdm.write(str(test_loss / len(test_loader)))
+    tqdm.write("Epoch: [{}/{}], test accuracy:{:.6f},loss:{:.6f}".format(epoch, N_EPOCHS, correct / len(test_loader.dataset),test_loss / len(test_loader)))
 
 
 if __name__ == '__main__':
