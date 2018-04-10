@@ -17,9 +17,9 @@ class Dataset:
                 transforms.Normalize((0.1307,), (0.3081,))
             ])
 
-            train_dataset = datasets.MNIST('../../capsule-net-pytorch/data', train=True, download=True,
+            train_dataset = datasets.MNIST('/data', train=True, download=True,
                                            transform=dataset_transform)
-            test_dataset = datasets.MNIST('../../capsule-net-pytorch/data', train=False, download=True,
+            test_dataset = datasets.MNIST('/data', train=False, download=True,
                                           transform=dataset_transform)
 
             self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=_batch_size, shuffle=True)
