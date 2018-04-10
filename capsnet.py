@@ -1,11 +1,7 @@
-import numpy as np
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from torch.optim import Adam
-from torchvision import datasets, transforms
 
 USE_CUDA = True if torch.cuda.is_available() else False
 
@@ -25,9 +21,9 @@ class ConvLayer(nn.Module):
 
 
 class PrimaryCaps(nn.Module):
-    def __init__(self, num_capsules=8, in_channels=256, out_channels=32, kernel_size=9):
+    def __init__(self, num_capsules=8, in_channels=256, out_channels=32, kernel_size=9, num_routes=32 * 6 * 6):
         super(PrimaryCaps, self).__init__()
-
+        self.num_routes = num_routes
         self.capsules = nn.ModuleList([
             nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=2, padding=0)
             for _ in range(num_capsules)])
@@ -35,7 +31,7 @@ class PrimaryCaps(nn.Module):
     def forward(self, x):
         u = [capsule(x) for capsule in self.capsules]
         u = torch.stack(u, dim=1)
-        u = u.view(x.size(0), 32 * 6 * 6, -1)
+        u = u.view(x.size(0), self.num_routes, -1)
         return self.squash(u)
 
     def squash(self, input_tensor):
@@ -86,16 +82,17 @@ class DigitCaps(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, input_width=28, input_height=28):
+    def __init__(self, input_width=28, input_height=28, input_channel=1):
         super(Decoder, self).__init__()
         self.input_width = input_width
         self.input_height = input_height
+        self.input_channel = input_channel
         self.reconstraction_layers = nn.Sequential(
             nn.Linear(16 * 10, 512),
             nn.ReLU(inplace=True),
             nn.Linear(512, 1024),
             nn.ReLU(inplace=True),
-            nn.Linear(1024, 784),
+            nn.Linear(1024, self.input_height * self.input_height * self.input_channel),
             nn.Sigmoid()
         )
 
@@ -108,10 +105,9 @@ class Decoder(nn.Module):
         if USE_CUDA:
             masked = masked.cuda()
         masked = masked.index_select(dim=0, index=Variable(max_length_indices.squeeze(1).data))
-
-        reconstructions = self.reconstraction_layers((x * masked[:, :, None, None]).view(x.size(0), -1))
-        reconstructions = reconstructions.view(-1, 1, self.input_width, self.input_height)
-
+        t = (x * masked[:, :, None, None]).view(x.size(0), -1)
+        reconstructions = self.reconstraction_layers(t)
+        reconstructions = reconstructions.view(-1, self.input_channel, self.input_width, self.input_height)
         return reconstructions, masked
 
 
@@ -121,10 +117,10 @@ class CapsNet(nn.Module):
         if config:
             self.conv_layer = ConvLayer(config.cnn_in_channels, config.cnn_out_channels, config.cnn_kernel_size)
             self.primary_capsules = PrimaryCaps(config.pc_num_capsules, config.pc_in_channels, config.pc_out_channels,
-                                                config.pc_kernel_size)
+                                                config.pc_kernel_size, config.pc_num_routes)
             self.digit_capsules = DigitCaps(config.dc_num_capsules, config.dc_num_routes, config.dc_in_channels,
                                             config.dc_out_channels)
-            self.decoder = Decoder(config.input_width, config.input_height)
+            self.decoder = Decoder(config.input_width, config.input_height, config.cnn_in_channels)
         else:
             self.conv_layer = ConvLayer()
             self.primary_capsules = PrimaryCaps()
