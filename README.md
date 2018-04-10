@@ -19,7 +19,7 @@ Currently, the code supports both **MNIST and CIFAR-10** datasets.
 
 Just run `Python test_capsnet.py` in your terminal. That's all. If you want to change the dataset (MNIST or CIFAR-10), you can easily set the `dataset` variable.
 
-It is better to run the code on a server with GPUs. Capsule network demands good computing devices. On my device (Nvidia K80), it will take about 5 minutes for one epoch.
+It is better to run the code on a server with GPUs. Capsule network demands good computing devices. For instance, on my device (Nvidia K80), it will take about 5 minutes for one epoch of the MNIST datasets (batch size = 100).
 
 ## More details
 
@@ -27,6 +27,10 @@ There are 3 `.py` files:
 - `capsnet.py`: the main class for capsule network
 - `data_loader.py`: the class to hold many classes
 - `test_capsnet.py`: the training and testing code
+
+The results on your device may look like the following picture:
+
+
 
 ## Acknowledgements
 
