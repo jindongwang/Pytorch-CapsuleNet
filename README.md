@@ -30,7 +30,7 @@ There are 3 `.py` files:
 
 The results on your device may look like the following picture:
 
-
+![](https://raw.githubusercontent.com/jindongwang/Pytorch-CapsuleNet/master/result.jpg)
 
 ## Acknowledgements
 
