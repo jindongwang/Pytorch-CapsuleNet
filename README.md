@@ -17,7 +17,7 @@ This repo is designed to hold other datasets and configurations. And the most im
 
 Just run `Python test_capsnet.py` in your terminal. That's all.
 
-It is better to run the code in a server with good GPUs. Capsule network requires good computing devices. On my device (Nvidia K80), it will take about 5 minutes for one epoch.
+It is better to run the code on a server with GPUs. Capsule network demands good computing devices. On my device (Nvidia K80), it will take about 5 minutes for one epoch.
 
 ## More details
 
