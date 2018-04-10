@@ -6,6 +6,8 @@ There are already many repos containing the code for CapsNet. However, most of t
 
 This repo is designed to hold other datasets and configurations. And the most important thing is, we want to make the code **flexible**. Then, we can *tailor* the network according to our needs.
 
+Currently, the code supports both **MNIST and CIFAR-10** datasets.
+
 ## Requirements
 
 - Python 3.x
@@ -15,7 +17,7 @@ This repo is designed to hold other datasets and configurations. And the most im
 
 ## Run
 
-Just run `Python test_capsnet.py` in your terminal. That's all.
+Just run `Python test_capsnet.py` in your terminal. That's all. If you want to change the dataset (MNIST or CIFAR-10), you can easily set the `dataset` variable.
 
 It is better to run the code on a server with GPUs. Capsule network demands good computing devices. On my device (Nvidia K80), it will take about 5 minutes for one epoch.
 
