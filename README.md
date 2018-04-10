@@ -1,10 +1,10 @@
 # Pytorch-CapsuleNet
 
-An easy-to-follow Pytorch implementation of Hinton's Capsule Network
+A flexible and easy-to-follow Pytorch implementation of Hinton's Capsule Network.
 
 There are already many repos containing the code for CapsNet. However, most of them are too tight to customize. And as we all know, Hinton's original paper is only tested on *MNIST* datasets. We clearly want to do more.
 
-This repo is designed to hold other datasets and configurations. And the most important thing is, we want to make the code **flexible**. Then, we can do other things.
+This repo is designed to hold other datasets and configurations. And the most important thing is, we want to make the code **flexible**. Then, we can *tailor* the network according to our needs.
 
 ## Requirements
 
@@ -15,7 +15,9 @@ This repo is designed to hold other datasets and configurations. And the most im
 
 ## Run
 
-Just `Python test_capsnet.py`, that's all.
+Just run `Python test_capsnet.py` in your terminal. That's all.
+
+It is better to run the code in a server with good GPUs. Capsule network requires good computing devices. On my device (Nvidia K80), it will take about 5 minutes for one epoch.
 
 ## More details
 
