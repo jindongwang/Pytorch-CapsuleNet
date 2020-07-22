@@ -90,7 +90,7 @@ def train(model, optimizer, train_loader, epoch):
         loss.backward()
         optimizer.step()
         correct = sum(np.argmax(masked.data.cpu().numpy(), 1) == np.argmax(target.data.cpu().numpy(), 1))
-        train_loss = loss.data[0]
+        train_loss = loss.item()
         total_loss += train_loss
         if batch_id % 100 == 0:
             tqdm.write("Epoch: [{}/{}], Batch: [{}/{}], train accuracy: {:.6f}, loss: {:.6f}".format(
@@ -119,7 +119,7 @@ def test(capsule_net, test_loader, epoch):
         output, reconstructions, masked = capsule_net(data)
         loss = capsule_net.loss(data, output, target, reconstructions)
 
-        test_loss += loss.data[0]
+        test_loss += loss.item()
         correct += sum(np.argmax(masked.data.cpu().numpy(), 1) ==
                        np.argmax(target.data.cpu().numpy(), 1))
 
