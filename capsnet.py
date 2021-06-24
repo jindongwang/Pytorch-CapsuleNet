@@ -92,7 +92,7 @@ class Decoder(nn.Module):
             nn.ReLU(inplace=True),
             nn.Linear(512, 1024),
             nn.ReLU(inplace=True),
-            nn.Linear(1024, self.input_height * self.input_height * self.input_channel),
+            nn.Linear(1024, self.input_height * self.input_width * self.input_channel),
             nn.Sigmoid()
         )
 
